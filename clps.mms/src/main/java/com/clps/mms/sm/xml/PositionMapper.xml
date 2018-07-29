@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.clps.mms.sm.dao.PositionMapper">
+  <resultMap id="BaseResultMap" type="com.clps.mms.sm.pojo.Position">
+    <id column="position_id" jdbcType="INTEGER" property="positionId" />
+    <result column="position_name" jdbcType="VARCHAR" property="positionName" />
+    <result column="position_created_name" jdbcType="VARCHAR" property="positionCreatedName" />
+    <result column="position_created_datetime" jdbcType="TIMESTAMP" property="positionCreatedDatetime" />
+    <result column="position_updated_name" jdbcType="VARCHAR" property="positionUpdatedName" />
+    <result column="position_updated_datetime" jdbcType="TIMESTAMP" property="positionUpdatedDatetime" />
+    <result column="position_comment" jdbcType="VARCHAR" property="positionComment" />
+    <result column="position_isVaild" jdbcType="INTEGER" property="positionIsvaild" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    position_id, position_name, position_created_name, position_created_datetime, position_updated_name, 
+    position_updated_datetime, position_comment, position_isVaild
+  </sql>
+   <!--  查询position操作 -->
+  
+  <select id="queryByPositionId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sm_position
+    where position_id = #{positionId,jdbcType=INTEGER} AND position_isVaild = 1
+  </select>
+  <select id="queryByPositionName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sm_position
+    where position_name like "%"#{positionName,jdbcType=VARCHAR}"%" 
+  </select>
+  <select id="queryPositions"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sm_position
+    where position_isVaild = 1
+  </select>
+  <select id="getCountPosition"  resultType="java.lang.Integer">
+    select count(*)
+    from sm_position
+    where position_isVaild = 1
+  </select>
+  
+  <select id="findByPaging" parameterType="com.clps.mms.util.paging.PagingVO" resultMap="BaseResultMap">
+   	select 
+   <include refid="Base_Column_List" />
+    from sm_position
+    where position_isVaild = 1 ORDER BY position_updated_datetime DESC
+  limit #{toPageNo}, #{pageSize}
+    </select>
+ 
+<!--  添加position操作 -->
+  <insert id="insert" parameterType="com.clps.mms.sm.pojo.Position">
+    <selectKey keyProperty="positionId" order="BEFORE" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into sm_position (position_id, position_department_id, position_name, 
+      position_created_name, position_created_datetime, 
+      position_updated_name, position_updated_datetime, 
+      position_comment, position_isVaild)
+    values (#{positionId,jdbcType=INTEGER}, #{positionDepartmentId,jdbcType=INTEGER}, #{positionName,jdbcType=VARCHAR}, 
+      #{positionCreatedName,jdbcType=VARCHAR}, #{positionCreatedDatetime,jdbcType=TIMESTAMP}, 
+      #{positionUpdatedName,jdbcType=VARCHAR}, #{positionUpdatedDatetime,jdbcType=TIMESTAMP}, 
+      #{positionComment,jdbcType=VARCHAR}, 1)
+  </insert>
+  <insert id="addPosition" parameterType="com.clps.mms.sm.pojo.Position">
+    <selectKey keyProperty="positionId" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into sm_position
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+     
+      <if test="positionName != null">
+        position_name,
+      </if>
+      <if test="positionCreatedName != null">
+        position_created_name,
+      </if>
+      <if test="positionCreatedDatetime != null">
+        position_created_datetime,
+      </if>
+      <if test="positionUpdatedName != null">
+        position_updated_name,
+      </if>
+      <if test="positionUpdatedDatetime != null">
+        position_updated_datetime,
+      </if>
+      <if test="positionComment != null">
+        position_comment,
+      </if>
+        position_isVaild
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+    
+      <if test="positionName != null">
+        #{positionName,jdbcType=VARCHAR},
+      </if>
+      <if test="positionCreatedName != null">
+        #{positionCreatedName,jdbcType=VARCHAR},
+      </if>
+      <if test="positionCreatedDatetime != null">
+        #{positionCreatedDatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="positionUpdatedName != null">
+          #{positionUpdatedName,jdbcType=VARCHAR},
+      </if>
+      <if test="positionUpdatedDatetime != null">
+        #{positionCreatedDatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="positionComment != null">
+        #{positionComment,jdbcType=VARCHAR},
+      </if>
+      1
+    </trim>
+  </insert>
+  
+<!--   更新position操作 -->
+  <update id="updatePosition" parameterType="com.clps.mms.sm.pojo.Position">
+    update sm_position
+    <set>
+      <if test="positionName != null">
+        position_name = #{positionName,jdbcType=VARCHAR},
+      </if>
+      <if test="positionCreatedName != null">
+        position_created_name = #{positionCreatedName,jdbcType=VARCHAR},
+      </if>
+      <if test="positionCreatedDatetime != null">
+        position_created_datetime = #{positionCreatedDatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="positionUpdatedName != null">
+        position_updated_name = #{positionUpdatedName,jdbcType=VARCHAR},
+      </if>
+      <if test="positionUpdatedDatetime != null">
+        position_updated_datetime = #{positionUpdatedDatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="positionComment != null">
+        position_comment = #{positionComment,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where position_id = #{positionId,jdbcType=INTEGER} AND position_isVaild = 1
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.clps.mms.sm.pojo.Position">
+    update sm_position
+    set position_name = #{positionName,jdbcType=VARCHAR},
+      position_created_name = #{positionCreatedName,jdbcType=VARCHAR},
+      position_created_datetime = #{positionCreatedDatetime,jdbcType=TIMESTAMP},
+      position_updated_name = #{positionUpdatedName,jdbcType=VARCHAR},
+      position_updated_datetime = #{positionUpdatedDatetime,jdbcType=TIMESTAMP},
+      position_comment = #{positionComment,jdbcType=VARCHAR}
+    where position_id = #{positionId,jdbcType=INTEGER} AND position_isVaild = 1
+  </update>
+  
+<!--   删除position操作 -->
+   <delete id="deleteByPositionId" parameterType="java.lang.Integer">
+    update sm_position
+    set position_isVaild = 0
+    where position_id = #{positionId,jdbcType=INTEGER}
+  </delete>
+</mapper>

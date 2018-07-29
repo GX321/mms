@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.clps.mms.log.dao.LogMapper">
+	<resultMap id="BaseResultMap" type="com.clps.mms.log.pojo.Log">
+		<id column="log_id" jdbcType="INTEGER" property="logId" />
+		<result column="log_operation_time" jdbcType="VARCHAR"
+			property="logOperationTime" />
+		<result column="log_operator_name" jdbcType="VARCHAR" property="logOperatorName" />
+		<result column="log_operation_object" jdbcType="VARCHAR"
+			property="logOperationObject" />
+		<result column="log_operation_kind" jdbcType="VARCHAR"
+			property="logOperationKind" />
+		<result column="log_operation_comment" jdbcType="VARCHAR"
+			property="logOperationComment" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		log_id, log_operation_time, log_operator_name,
+		log_operation_object,
+		log_operation_kind,
+		log_operation_comment
+	</sql>
+	<!-- 通过操作人名查询 -->
+	<select id="queryLogByName" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		log_id, log_operation_time, log_operator_name,
+		log_operation_object,
+		log_operation_kind,
+		log_operation_comment
+		from
+		sm_log
+		where log_operator_name = #{logOperatorName,jdbcType=VARCHAR}
+	</select>
+
+	<!-- 通过操作对象查询 -->
+	<select id="queryLogByObject" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		log_id, log_operation_time, log_operator_name,
+		log_operation_object,
+		log_operation_kind,
+		log_operation_comment
+		from
+		sm_log
+		where log_operation_object =
+		#{logOperationObject,jdbcType=VARCHAR}
+	</select>
+	<!-- 通过操作类型查询 -->
+	<select id="queryLogByKind" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		log_id, log_operation_time, log_operator_name,
+		log_operation_object,
+		log_operation_kind,
+		log_operation_comment
+		from
+		sm_log
+		where log_operation_kind = #{logOperationKind,jdbcType=VARCHAR}
+	</select>
+
+	<!-- 根据操作描述模糊查询 -->
+	<select id="getLikeComment" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select log_id, log_operation_time, log_operator_name,
+		log_operation_object,
+		log_operation_kind,
+		log_operation_comment from
+		sm_log where log_operation_comment like
+		concat('%',#{logOperationComment},'%')
+	</select>
+
+	<!-- 查询所有 -->
+	<select id="queryAllLog" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from sm_log
+	</select>
+	
+	<!-- 插入 -->
+	<insert id="addLog" parameterType="com.clps.mms.log.pojo.Log">
+		<selectKey keyProperty="logId" order="BEFORE" resultType="java.lang.Integer">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into sm_log
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			log_id,
+			<if test="logOperationTime != null">
+				log_operation_time,
+			</if>
+			<if test="logOperatorName != null">
+				log_operator_name,
+			</if>
+			<if test="logOperationObject != null">
+				log_operation_object,
+			</if>
+			<if test="logOperationKind != null">
+				log_operation_kind,
+			</if>
+			<if test="logOperationComment != null">
+				log_operation_comment,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{logId,jdbcType=INTEGER},
+			<if test="logOperationTime != null">
+				#{logOperationTime,jdbcType=VARCHAR},
+			</if>
+			<if test="logOperatorName != null">
+				#{logOperatorName,jdbcType=VARCHAR},
+			</if>
+			<if test="logOperationObject != null">
+				#{logOperationObject,jdbcType=VARCHAR},
+			</if>
+			<if test="logOperationKind != null">
+				#{logOperationKind,jdbcType=VARCHAR},
+			</if>
+			<if test="logOperationComment != null">
+				#{logOperationComment,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+
+</mapper>

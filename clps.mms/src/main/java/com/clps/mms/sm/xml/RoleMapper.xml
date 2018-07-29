@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.clps.mms.sm.dao.RoleMapper">
+	<resultMap id="BaseResultMap" type="com.clps.mms.sm.pojo.Role">
+		<id column="role_id" jdbcType="INTEGER" property="roleId" />
+		<result column="role_name" jdbcType="VARCHAR" property="roleName" />
+		<result column="role_group_id" jdbcType="VARCHAR" property="roleGroupId" />
+		<result column="role_group_name" jdbcType="VARCHAR" property="roleGroupName" />
+		<result column="role_update_time" jdbcType="TIMESTAMP"
+			property="roleUpdateTime" />
+		<result column="role_maker" jdbcType="VARCHAR" property="roleMaker" />
+		<result column="role_comment" jdbcType="VARCHAR" property="roleComment" />
+	<!-- 	<result column="is_visible" jdbcType="INTEGER" property="isVisible" />  -->
+	</resultMap>
+	<sql id="Base_Column_List">
+		role_id, role_name, role_group_id, role_group_name,
+		role_update_time,
+		role_maker,
+		role_comment, is_visible
+	</sql>
+	<select id="queryRoleById" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from sm_role
+		where role_id = #{roleId,jdbcType=INTEGER}
+	</select>
+	<select id="queryAllRoles" resultMap="BaseResultMap">
+		select
+		role_id, role_name,
+		role_group_id, role_group_name, role_update_time,
+		role_maker,role_comment
+		from sm_role
+		where is_visible = 1
+	</select>
+	
+	<!-- Delete Method -->
+	<delete id="deleteRoleById" parameterType="java.lang.Integer">
+		update sm_role set
+		is_visible = 0
+		where role_id = #{roleId,jdbcType=INTEGER}
+	</delete>
+	
+	
+	<!-- Insert Method -->
+	<insert id="addRole" parameterType="com.clps.mms.sm.pojo.Role">
+		<selectKey keyProperty="roleId" order="BEFORE" resultType="java.lang.Integer">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into sm_role
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			role_id,
+			<if test="roleName != null">
+				role_name,
+			</if>
+			<if test="roleGroupId != null">
+				role_group_id,
+			</if>
+			<if test="roleGroupName != null">
+				role_group_name,
+			</if>
+			<if test="roleUpdateTime != null">
+				role_update_time,
+			</if>
+			<if test="roleMaker != null">
+				role_maker,
+			</if>
+			<if test="roleComment != null">
+				role_comment,
+			</if>
+			<if test="isVisible != null">
+				is_visible,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{roleId,jdbcType=INTEGER},
+			<if test="roleName != null">
+				#{roleName,jdbcType=VARCHAR},
+			</if>
+			<if test="roleGroupId != null">
+				#{roleGroupId,jdbcType=VARCHAR},
+			</if>
+			<if test="roleGroupName != null">
+				#{roleGroupName,jdbcType=VARCHAR},
+			</if>
+			<if test="roleUpdateTime != null">
+				#{roleUpdateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="roleMaker != null">
+				#{roleMaker,jdbcType=VARCHAR},
+			</if>
+			<if test="roleComment != null">
+				#{roleComment,jdbcType=VARCHAR},
+			</if>
+			<if test="isVisible != null">
+				#{isVisible,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	
+	<!-- Update Method -->
+	<update id="updateRole" parameterType="com.clps.mms.sm.pojo.Role">
+		update sm_role
+		<set>
+			<if test="roleName != null">
+				role_name = #{roleName,jdbcType=VARCHAR},
+			</if>
+			<if test="roleGroupId != null">
+				role_group_id = #{roleGroupId,jdbcType=VARCHAR},
+			</if>
+			<if test="roleGroupName != null">
+				role_group_name = #{roleGroupName,jdbcType=VARCHAR},
+			</if>
+			<if test="roleUpdateTime != null">
+				role_update_time = #{roleUpdateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="roleMaker != null">
+				role_maker = #{roleMaker,jdbcType=VARCHAR},
+			</if>
+			<if test="roleComment != null">
+				role_comment = #{roleComment,jdbcType=VARCHAR},
+			</if>
+			<if test="isVisible != null">
+				is_visible = #{isVisible,jdbcType=INTEGER},
+			</if>
+		</set>
+		where role_id = #{roleId,jdbcType=INTEGER}
+	</update>
+	
+
+</mapper>

@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.clps.mms.sm.dao.AccountMapper">
+  <resultMap id="BaseResultMap" type="com.clps.mms.sm.pojo.Account">
+    <id column="account_id" jdbcType="INTEGER" property="accountId" />
+    <result column="account_name" jdbcType="VARCHAR" property="accountName" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
+    <result column="account_pass" jdbcType="VARCHAR" property="accountPass" />
+    <result column="account_mail" jdbcType="VARCHAR" property="accountMail" />
+    <result column="account_position_id" jdbcType="INTEGER" property="accountPositionId" />
+    <result column="account_department_id" jdbcType="INTEGER" property="accountDepartmentId" />
+    <result column="account_role_id" jdbcType="INTEGER" property="accountRoleId" />
+    <result column="account_company_id" jdbcType="INTEGER" property="accountCompanyId" />
+    <result column="account_phone" jdbcType="VARCHAR" property="accountPhone" />
+    <result column="account_telephone" jdbcType="VARCHAR" property="accountTelephone" />
+    <result column="account_comment" jdbcType="VARCHAR" property="accountComment" />
+    <result column="account_created_datetime" jdbcType="TIMESTAMP" property="accountCreatedDatetime" />
+    <result column="account_created_name" jdbcType="INTEGER" property="accountCreatedName" />
+    <result column="account_updated_datetime" jdbcType="TIMESTAMP" property="accountUpdatedDatetime" />
+    <result column="account_updated_name" jdbcType="INTEGER" property="accountUpdatedName" />
+    <result column="is_visible" jdbcType="INTEGER" property="isVisible" />
+    <result column="account_default" jdbcType="VARCHAR" property="accountDefault" />
+  </resultMap>
+    
+  <resultMap id="AccountDisplayBaseResultMap" type="com.clps.mms.sm.vo.AccountVo">
+    <id column="account_id" jdbcType="INTEGER" property="accountId" />
+    <result column="account_name" jdbcType="VARCHAR" property="accountName" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
+    <result column="account_pass" jdbcType="VARCHAR" property="accountPass" />
+    <result column="account_mail" jdbcType="VARCHAR" property="accountMail" />
+    <result column="account_position" jdbcType="VARCHAR" property="accountPosition" />
+    <result column="account_department" jdbcType="VARCHAR" property="accountDepartment" />
+    <result column="account_role" jdbcType="VARCHAR" property="accountRole" />
+    <result column="account_company" jdbcType="VARCHAR" property="accountCompany" />
+    <result column="account_phone" jdbcType="VARCHAR" property="accountPhone" />
+    <result column="account_telephone" jdbcType="VARCHAR" property="accountTelephone" />
+    <result column="account_comment" jdbcType="VARCHAR" property="accountComment" />
+    <result column="account_created_datetime" jdbcType="TIMESTAMP" property="accountCreatedDatetime" />
+    <result column="account_created_name" jdbcType="VARCHAR" property="accountCreatedName" />
+    <result column="account_updated_datetime" jdbcType="TIMESTAMP" property="accountUpdatedDatetime" />
+    <result column="account_updated_name" jdbcType="VARCHAR" property="accountUpdatedName" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    account_id, account_name, account, account_pass, account_mail, account_position_id, 
+    account_department_id, account_role_id, account_company_id, account_phone, account_telephone, 
+    account_comment, account_created_datetime, account_created_name, account_updated_datetime, 
+    account_updated_name, is_visible, account_default
+  </sql>
+  
+  <insert id="addAccountInfo" parameterType="com.clps.mms.sm.pojo.Account">
+    insert into sm_account (account_id, account_name, account, 
+      account_pass, account_mail, account_position_id, 
+      account_department_id, account_role_id, account_company_id, 
+      account_phone, account_telephone, account_comment, 
+      account_created_datetime, account_created_name, 
+      account_updated_datetime, account_updated_name, 
+      is_visible, account_default)
+    values (#{accountId,jdbcType=INTEGER}, #{accountName,jdbcType=VARCHAR}, #{account,jdbcType=VARCHAR}, 
+      #{accountPass,jdbcType=VARCHAR}, #{accountMail,jdbcType=VARCHAR}, #{accountPositionId,jdbcType=INTEGER}, 
+      #{accountDepartmentId,jdbcType=INTEGER}, #{accountRoleId,jdbcType=INTEGER}, #{accountCompanyId,jdbcType=INTEGER}, 
+      #{accountPhone,jdbcType=VARCHAR}, #{accountTelephone,jdbcType=VARCHAR}, #{accountComment,jdbcType=VARCHAR}, 
+      #{accountCreatedDatetime,jdbcType=TIMESTAMP}, #{accountCreatedName,jdbcType=INTEGER}, 
+      #{accountUpdatedDatetime,jdbcType=TIMESTAMP}, #{accountUpdatedName,jdbcType=INTEGER}, 
+      #{isVisible,jdbcType=INTEGER}, #{accountDefault,jdbcType=VARCHAR})
+  </insert>
+  
+  <!--将Account类转化为AccountVo类的方法-->
+  <select id="accountDisplay" parameterType="com.clps.mms.sm.pojo.Account" resultMap="AccountDisplayBaseResultMap">
+    select account_id,account_name,account,account_pass,account_mail,
+    (select position_name from sm_position where position_id=#{accountPositionId}) as account_position,
+    (select Department_name from sm_department where Department_id=#{accountDepartmentId}) as account_department,
+    (select role_name from sm_role where role_id=#{accountRoleId}) as account_role,account_phone, account_telephone,account_created_datetime,(select account from sm_account where account_id=#{accountCreatedName}) as account_created_name,account_updated_datetime, (select account from sm_account where account_id=#{accountUpdatedName}) as account_updated_name
+      from sm_account
+    where account = #{account}
+  </select>
+  
+  <!--查询账户的信息-->
+   <select id="queryAccountInfoById" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sm_account
+    where account = #{account,jdbcType=VARCHAR}
+  </select>
+  
+  <!--查询所有的账户信息-->
+  <select id="queryAllAccountInfo"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sm_account
+  </select>
+  
+  <select id="queryAccountCount" resultType="java.lang.Integer">
+    select 
+    count(*)
+    from sm_account
+  </select>
+  
+  <select id="findByPaging" parameterType="com.clps.mms.util.paging.PagingVO" resultMap="BaseResultMap">
+   	select 
+   <include refid="Base_Column_List" />
+    from sm_account
+  limit #{toPageNo}, #{pageSize}
+    </select>
+  
+  
+  
+  
+  <!--通过部分或全部账户名称进行模糊查询-->
+  <select id="queryAccountInfoByLike" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sm_account 
+    <where>
+    <if test="value!=null">
+    account like '%${value}%'
+    </if>
+    </where>
+  </select>
+  
+  <!--编辑账户的信息-->
+ <update id="updateAccountInfo" parameterType="com.clps.mms.sm.pojo.Account">
+    update sm_account
+    <set>
+      <if test="accountName != null">
+        account_name = #{accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="account != null">
+        account = #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="accountPass != null">
+        account_pass = #{accountPass,jdbcType=VARCHAR},
+      </if>
+      <if test="accountMail != null">
+        account_mail = #{accountMail,jdbcType=VARCHAR},
+      </if>
+      <if test="accountPositionId != null">
+        account_position_id = #{accountPositionId,jdbcType=INTEGER},
+      </if>
+      <if test="accountDepartmentId != null">
+        account_department_id = #{accountDepartmentId,jdbcType=INTEGER},
+      </if>
+      <if test="accountRoleId != null">
+        account_role_id = #{accountRoleId,jdbcType=INTEGER},
+      </if>
+      <if test="accountCompanyId != null">
+        account_company_id = #{accountCompanyId,jdbcType=INTEGER},
+      </if>
+      <if test="accountPhone != null">
+        account_phone = #{accountPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="accountTelephone != null">
+        account_telephone = #{accountTelephone,jdbcType=VARCHAR},
+      </if>
+      <if test="accountComment != null">
+        account_comment = #{accountComment,jdbcType=VARCHAR},
+      </if>
+      <if test="accountCreatedDatetime != null">
+        account_created_datetime = #{accountCreatedDatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="accountCreatedName != null">
+        account_created_name = #{accountCreatedName,jdbcType=INTEGER},
+      </if>
+      <if test="accountUpdatedDatetime != null">
+        account_updated_datetime = #{accountUpdatedDatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="accountUpdatedName != null">
+        account_updated_name = #{accountUpdatedName,jdbcType=INTEGER},
+      </if>
+      <if test="isVisible != null">
+        is_visible = #{isVisible,jdbcType=INTEGER},
+      </if>
+      <if test="accountDefault != null">
+        account_default = #{accountDefault,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where account = #{account,jdbcType=VARCHAR}
+  </update> 
+  
+  <!--删除账户的信息-->
+  <delete id="deleteAccountInfo" parameterType="java.lang.String">
+    delete from sm_account
+    where account = #{account,jdbcType=VARCHAR}
+  </delete>
+  
+  
+  
+  
+  
+  
+</mapper>

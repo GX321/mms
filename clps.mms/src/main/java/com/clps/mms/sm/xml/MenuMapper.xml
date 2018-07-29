@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.clps.mms.sm.dao.MenuMapper">
+	<resultMap id="BaseResultMap" type="com.clps.mms.sm.pojo.Menu">
+		<id column="menu_id" jdbcType="INTEGER" property="menuId" />
+		<result column="menu_name" jdbcType="VARCHAR" property="menuName" />
+		<result column="menu_parent" jdbcType="INTEGER" property="menuParent" />
+		<result column="menu_url" jdbcType="VARCHAR" property="menuUrl" />
+		<result column="menu_created_date" jdbcType="TIMESTAMP"
+			property="menuCreatedDate" />
+		<result column="menu_created_by" jdbcType="VARCHAR" property="menuCreatedBy" />
+		<result column="is_visable" jdbcType="BIT" property="isVisable" />
+		<result column="menu_comment" jdbcType="VARCHAR" property="menuComment" />
+		<result column="menu_updated_date" jdbcType="TIMESTAMP"
+			property="menuUpdatedDate" />
+		<result column="menu_updated_by" jdbcType="VARCHAR" property="menuUpdatedBy" />
+		<result column="menu_target" jdbcType="VARCHAR" property="menuTarget" />
+		<result column="menu_default1" jdbcType="VARCHAR" property="menuDefault1" />
+		<result column="menu_default2" jdbcType="VARCHAR" property="menuDefault2" />
+	</resultMap>
+	<resultMap id="JsonMap" type="com.clps.mms.sm.vo.MenuJson">
+		<id column="menu_id" jdbcType="VARCHAR" property="id" />
+		<result column="menu_name" jdbcType="VARCHAR" property="name" />
+		<result column="menu_parent" jdbcType="VARCHAR" property="pId" />
+		<result column="menu_url" jdbcType="VARCHAR" property="url" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		menu_id, menu_name, menu_parent, menu_url,
+		menu_created_date, menu_created_by,
+		is_visable,
+		menu_comment,
+		menu_updated_date, menu_updated_by, menu_target, menu_default1,
+		menu_default2
+	</sql>
+	<!--通过id查询菜单 -->
+	<select id="queryMenuById" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from sm_menu
+		where menu_id = #{menuId,jdbcType=INTEGER}
+	</select>
+	<!--查询所有菜单 -->
+	<select id="queryAllMenus" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from sm_menu
+	</select>
+	
+	<select id="queryMenusJson" resultMap="JsonMap">
+		select
+		menu_id, menu_name, menu_parent, menu_url
+		from sm_menu
+	</select>
+	<!--通过id删除菜单 -->
+	<delete id="deleteMenuById" parameterType="java.lang.Integer">
+		delete from sm_menu
+		where
+		menu_id = #{menuId,jdbcType=INTEGER}
+	</delete>
+	<!--添加菜单 -->
+	<insert id="addMenu" parameterType="com.clps.mms.sm.pojo.Menu">
+		<selectKey keyProperty="menuId" order="BEFORE" resultType="java.lang.Integer">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into sm_menu
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			menu_id,
+			<if test="menuName != null">
+				menu_name,
+			</if>
+			<if test="menuParent != null">
+				menu_parent,
+			</if>
+			<if test="menuUrl != null">
+				menu_url,
+			</if>
+			<if test="menuCreatedDate != null">
+				menu_created_date,
+			</if>
+			<if test="menuCreatedBy != null">
+				menu_created_by,
+			</if>
+			<if test="isVisable != null">
+				is_visable,
+			</if>
+			<if test="menuComment != null">
+				menu_comment,
+			</if>
+			<if test="menuUpdatedDate != null">
+				menu_updated_date,
+			</if>
+			<if test="menuUpdatedBy != null">
+				menu_updated_by,
+			</if>
+			<if test="menuTarget != null">
+				menu_target,
+			</if>
+			<if test="menuDefault1 != null">
+				menu_default1,
+			</if>
+			<if test="menuDefault2 != null">
+				menu_default2,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{menuId,jdbcType=INTEGER},
+			<if test="menuName != null">
+				#{menuName,jdbcType=VARCHAR},
+			</if>
+			<if test="menuParent != null">
+				#{menuParent,jdbcType=INTEGER},
+			</if>
+			<if test="menuUrl != null">
+				#{menuUrl,jdbcType=VARCHAR},
+			</if>
+			<if test="menuCreatedDate != null">
+				#{menuCreatedDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="menuCreatedBy != null">
+				#{menuCreatedBy,jdbcType=VARCHAR},
+			</if>
+			<if test="isVisable != null">
+				#{isVisable,jdbcType=BIT},
+			</if>
+			<if test="menuComment != null">
+				#{menuComment,jdbcType=VARCHAR},
+			</if>
+			<if test="menuUpdatedDate != null">
+				#{menuUpdatedDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="menuUpdatedBy != null">
+				#{menuUpdatedBy,jdbcType=VARCHAR},
+			</if>
+			<if test="menuTarget != null">
+				#{menuTarget,jdbcType=VARCHAR},
+			</if>
+			<if test="menuDefault1 != null">
+				#{menuDefault1,jdbcType=VARCHAR},
+			</if>
+			<if test="menuDefault2 != null">
+				#{menuDefault2,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<!--通过id修改菜单 -->
+	<update id="updateMenu" parameterType="com.clps.mms.sm.pojo.Menu">
+		update sm_menu
+		<set>
+			<if test="menuName != null">
+				menu_name = #{menuName,jdbcType=VARCHAR},
+			</if>
+			<if test="menuParent != null">
+				menu_parent = #{menuParent,jdbcType=INTEGER},
+			</if>
+			<if test="menuUrl != null">
+				menu_url = #{menuUrl,jdbcType=VARCHAR},
+			</if>
+			<if test="menuCreatedDate != null">
+				menu_created_date =
+				#{menuCreatedDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="menuCreatedBy != null">
+				menu_created_by = #{menuCreatedBy,jdbcType=VARCHAR},
+			</if>
+			<if test="isVisable != null">
+				is_visable = #{isVisable,jdbcType=BIT},
+			</if>
+			<if test="menuComment != null">
+				menu_comment = #{menuComment,jdbcType=VARCHAR},
+			</if>
+			<if test="menuUpdatedDate != null">
+				menu_updated_date =
+				#{menuUpdatedDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="menuUpdatedBy != null">
+				menu_updated_by = #{menuUpdatedBy,jdbcType=VARCHAR},
+			</if>
+			<if test="menuTarget != null">
+				menu_target = #{menuTarget,jdbcType=VARCHAR},
+			</if>
+			<if test="menuDefault1 != null">
+				menu_default1 = #{menuDefault1,jdbcType=VARCHAR},
+			</if>
+			<if test="menuDefault2 != null">
+				menu_default2 = #{menuDefault2,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where menu_id = #{menuId,jdbcType=INTEGER}
+	</update>
+
+</mapper>

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.clps.mms.sm.dao.DepartmentMapper">
+  <resultMap id="BaseResultMap" type="com.clps.mms.sm.pojo.Department">
+    <id column="Department_id" jdbcType="INTEGER" property="departmentId" />
+    <result column="Department_name" jdbcType="VARCHAR" property="departmentName" />
+    <result column="Department_address" jdbcType="VARCHAR" property="departmentAddress" />
+    <result column="Department_telephone" jdbcType="VARCHAR" property="departmentTelephone" />
+    <result column="Department_role" jdbcType="INTEGER" property="departmentRole" />
+    <result column="Department_introduction" jdbcType="VARCHAR" property="departmentIntroduction" />
+    <result column="Department_Superior" jdbcType="INTEGER" property="departmentSuperior" />
+    <result column="Department_createdId" jdbcType="INTEGER" property="departmentCreatedid" />
+    <result column="Department_createdTime" jdbcType="TIMESTAMP" property="departmentCreatedtime" />
+    <result column="Department_updatedId" jdbcType="INTEGER" property="departmentUpdatedid" />
+    <result column="Department_updatedTime" jdbcType="TIMESTAMP" property="departmentUpdatedtime" />
+    <result column="Department_isvisible" jdbcType="INTEGER" property="departmentIsvisible" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    Department_id, Department_name, Department_address, Department_telephone, Department_role, 
+    Department_introduction, Department_Superior, Department_createdId, Department_createdTime, 
+    Department_updatedId, Department_updatedTime, Department_isvisible
+  </sql>
+  <select id="queryById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sm_department
+    where Department_id = #{departmentId,jdbcType=INTEGER}
+  </select>
+
+
+  <insert id="insertDepartment" parameterType="com.clps.mms.sm.pojo.Department">
+    <selectKey keyProperty="departmentId" order="BEFORE" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into sm_department
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      Department_id,
+      <if test="departmentName != null">
+        Department_name,
+      </if>
+      <if test="departmentAddress != null">
+        Department_address,
+      </if>
+      <if test="departmentTelephone != null">
+        Department_telephone,
+      </if>
+      <if test="departmentRole != null">
+        Department_role,
+      </if>
+      <if test="departmentIntroduction != null">
+        Department_introduction,
+      </if>
+      <if test="departmentSuperior != null">
+        Department_Superior,
+      </if>
+      <if test="departmentCreatedid != null">
+        Department_createdId,
+      </if>
+      <if test="departmentCreatedtime != null">
+        Department_createdTime,
+      </if>
+      <if test="departmentUpdatedid != null">
+        Department_updatedId,
+      </if>
+      <if test="departmentUpdatedtime != null">
+        Department_updatedTime,
+      </if>
+      <if test="departmentIsvisible != null">
+        Department_isvisible,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      #{departmentId,jdbcType=INTEGER},
+      <if test="departmentName != null">
+        #{departmentName,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentAddress != null">
+        #{departmentAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentTelephone != null">
+        #{departmentTelephone,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentRole != null">
+        #{departmentRole,jdbcType=INTEGER},
+      </if>
+      <if test="departmentIntroduction != null">
+        #{departmentIntroduction,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentSuperior != null">
+        #{departmentSuperior,jdbcType=INTEGER},
+      </if>
+      <if test="departmentCreatedid != null">
+        #{departmentCreatedid,jdbcType=INTEGER},
+      </if>
+      <if test="departmentCreatedtime != null">
+        #{departmentCreatedtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="departmentUpdatedid != null">
+        #{departmentUpdatedid,jdbcType=INTEGER},
+      </if>
+      <if test="departmentUpdatedtime != null">
+        #{departmentUpdatedtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="departmentIsvisible != null">
+        #{departmentIsvisible,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  
+  
+  <update id="updateDepartment" parameterType="com.clps.mms.sm.pojo.Department">
+    update sm_department
+    <set>
+      <if test="departmentName != null">
+        Department_name = #{departmentName,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentAddress != null">
+        Department_address = #{departmentAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentTelephone != null">
+        Department_telephone = #{departmentTelephone,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentRole != null">
+        Department_role = #{departmentRole,jdbcType=INTEGER},
+      </if>
+      <if test="departmentIntroduction != null">
+        Department_introduction = #{departmentIntroduction,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentSuperior != null">
+        Department_Superior = #{departmentSuperior,jdbcType=INTEGER},
+      </if>
+      <if test="departmentCreatedid != null">
+        Department_createdId = #{departmentCreatedid,jdbcType=INTEGER},
+      </if>
+      <if test="departmentCreatedtime != null">
+        Department_createdTime = #{departmentCreatedtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="departmentUpdatedid != null">
+        Department_updatedId = #{departmentUpdatedid,jdbcType=INTEGER},
+      </if>
+      <if test="departmentUpdatedtime != null">
+        Department_updatedTime = #{departmentUpdatedtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="departmentIsvisible != null">
+        Department_isvisible = #{departmentIsvisible,jdbcType=INTEGER},
+      </if>
+    </set>
+    where Department_id = #{departmentId,jdbcType=INTEGER}
+  </update>
+  
+  <select id="queryByPaging" parameterType="com.clps.mms.util.paging.PagingVO" resultMap="BaseResultMap">
+   	select 
+   <include refid="Base_Column_List" />
+    from sm_department
+    where Department_isvisible=1
+  limit #{toPageNo}, #{pageSize}
+    </select>
+  
+  <select id="queryDepartment" parameterType="java.lang.Integer" resultMap="BaseResultMap">  
+    select * from sm_department where  Department_isvisible=1
+  </select>  
+  
+  <update id="deleteDepartment" parameterType="com.clps.mms.sm.pojo.Department">
+  	update sm_department set Department_isvisible=0 where Department_id = #{departmentId,jdbcType=INTEGER}
+  </update>
+  
+  
+   <select id="getCountDepartment"  resultType="java.lang.Integer">
+    select count(*)
+    from sm_department
+    where Department_isvisible= 1
+  </select>
+</mapper>
